@@ -1,0 +1,23 @@
+{
+  "name": "lambda-s3",
+  "author": "Nishant Kohli",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node -r tsconfig-paths/register src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prod": "yarn build && yarn start"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.758.0",
+    "@aws-sdk/client-sns": "^3.758.0",
+		"dotenv": "^16.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3"
+  }
+}
