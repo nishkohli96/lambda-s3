@@ -37,8 +37,7 @@ jobs:
         run: |
           mkdir package
           cp -r ./src package/
-          cp package.json package/
-          cp pnpm-lock.yaml package/
+          cp {package.json,.npmrc,pnpm-lock.yaml} package/
           cd package
           pnpm install
           zip -r $ZIP_FILENAME .
