@@ -43,7 +43,7 @@ jobs:
           cp package.json package/
           cp pnpm-lock.yaml package/
           cd package
-          pnpm install --prod
+          pnpm install
           zip -r $ZIP_FILENAME .
 
       # 🔹 Upload ZIP to S3
