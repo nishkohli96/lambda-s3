@@ -3,6 +3,7 @@
   "author": "Nishant Kohli",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
     "@aws-sdk/client-sns": "^3.758.0",
