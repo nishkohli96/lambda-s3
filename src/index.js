@@ -1,14 +1,6 @@
 import 'dotenv/config';
-import {
-  S3Client,
-  CopyObjectCommand,
-  CopyObjectCommandInput
-} from '@aws-sdk/client-s3';
-import {
-  SNSClient,
-  PublishCommand,
-  PublishCommandInput
-} from '@aws-sdk/client-sns';
+import { S3Client, CopyObjectCommand } from '@aws-sdk/client-s3';
+import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 
 const s3Client = new S3Client();
 export const snsClient = new SNSClient();
@@ -24,7 +16,7 @@ export const handler = async (event) => {
 
     const copyPromises = event.Records.map(async (record) => {
       const objectKey = record.s3.object.key;
-      const copyParams: CopyObjectCommandInput = {
+      const copyParams = {
         Bucket: DSTN_BUCKET,
         CopySource: `${sourceBucket}/${objectKey}`,
         Key: objectKey
@@ -36,7 +28,7 @@ export const handler = async (event) => {
     const copyObjectsResponse = await Promise.all(copyPromises);
 
     /* Send event info to SNS */
-    const input: PublishCommandInput = {
+    const input = {
       TopicArn: snsTopicArn,
       Message: JSON.stringify(event.Records, null, 2),
       Subject: 'Manual SNS Notification of S3 copying objects'

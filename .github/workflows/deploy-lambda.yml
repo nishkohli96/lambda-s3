@@ -33,13 +33,10 @@ jobs:
       - name: 📦 Install Dependencies
         run: pnpm install
 
-      - name: 🔨 Build app
-        run: pnpm run build
-
       - name: 📦 Create Deployment Package
         run: |
           mkdir package
-          cp -r dist/* package/
+          cp -r ./src package/
           cp package.json package/
           cp pnpm-lock.yaml package/
           cd package
