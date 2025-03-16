@@ -8,19 +8,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # ✅ Key to upload the zipped lambda code in S3 Bucket.  
+    env:
+      ZIP_FILENAME: lambda_${{ secrets.LAMBDA_FN_NAME }}.zip
 
     steps:
       - name: ⬇️ Checkout Code
         uses: actions/checkout@v4
-
-      # Python is required for setting up SAM
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Setup AWS SAM (Serverless Application Model)
-        uses: aws-actions/setup-sam@v2
 
       - uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -42,7 +36,7 @@ jobs:
       - name: 🔨 Build app
         run: pnpm run build
 
-      - name: 📦 Create Deployment Package (Include node_modules)
+      - name: 📦 Create Deployment Package
         run: |
           mkdir package
           cp -r dist/* package/
@@ -50,5 +44,18 @@ jobs:
           cp pnpm-lock.yaml package/
           cd package
           pnpm install --prod
-          zip -r lambda.zip .
+          zip -r $ZIP_FILENAME .
+
+      # 🔹 Upload ZIP to S3
+      - name: 🚀 Upload to S3
+        run: |
+          aws s3 cp package/$ZIP_FILENAME s3://${{ secrets.LAMBDA_S3_BUCKET }}/$ZIP_FILENAME
+
+      # 🔹 Deploy Lambda from S3
+      - name: 🔄 Update Lambda Code from S3
+        run: |
+          aws lambda update-function-code \
+          --function-name ${{ secrets.LAMBDA_FN_NAME }} \
+          --s3-bucket ${{ secrets.LAMBDA_S3_BUCKET }} \
+          --s3-key $ZIP_FILENAME
 
